@@ -87,9 +87,9 @@ def parseCoursesIntoJSON(link: str):
                     }
                 
                 try:
-                    toggle_button = driver.find_element(By.CLASS_NAME, 'cb-extras-toggle')
+                    toggle_button = course.find_element(By.CLASS_NAME, 'cb-extras-toggle')
                     toggle_button.click()
-                    extras = driver.find_elements(By.CLASS_NAME, 'courseblockextra')
+                    extras = course.find_elements(By.CLASS_NAME, 'courseblockextra')
                     for extra in extras:
                         try:
                             label = extra.find_element(By.CLASS_NAME, 'cbextra-label').text
