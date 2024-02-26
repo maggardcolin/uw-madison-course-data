@@ -14,7 +14,7 @@ if scrapeOption == 'y':
     output = []
 
     if debug:
-        for i in range(1):
+        for i in range(3):
             link = links[i]
             subjectInfo = parseCoursesIntoJSON(link)
             subjectName = getSubjectName()
@@ -26,7 +26,7 @@ if scrapeOption == 'y':
             output.append([subjectName] + [subjectInfo])
     now = datetime.now()
     current_date_time = now.strftime("%m-%d-%Y")
-    with open(f"./output/UWCourseCatalog_{current_date_time}.json", 'w') as file:
+    with open(f"./datasets/UWCourseCatalog_{current_date_time}.json", 'w') as file:
         json.dump(output, file, indent = 4)
 else:
     print("Have a nice day!")

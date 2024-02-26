@@ -67,6 +67,8 @@ def parseCoursesIntoJSON(link: str):
         mortarBoardClasses = driver.find_elements(By.CLASS_NAME, 'gradcap')
         print(f"Now parsing through courses in {subjectName}...")
         coursesCompleted = 1
+        print_progress_bar(coursesCompleted, len(courses), prefix = 'Progress:', suffix = 'Complete', length = 50)
+
         for course in courses:
             try:
                 if course in mortarBoardClasses:
@@ -102,11 +104,7 @@ def parseCoursesIntoJSON(link: str):
                             return
                     if debug:
                             courseInfoForGivenSubject.append(output)
-                            try:
-                                print(f"Finished parsing class {coursesCompleted} out of {len(courses)}.")
-                            except Exception as e:
-                                print(e)
-                                return
+                            print_progress_bar(coursesCompleted, len(courses), prefix = 'Progress:', suffix = 'Complete', length = 50)
                             return courseInfoForGivenSubject
                     else:
                         pass
@@ -116,11 +114,7 @@ def parseCoursesIntoJSON(link: str):
 
                 # add info to list
                 courseInfoForGivenSubject.append(output)
-                try:
-                    print(f"Finished parsing class {coursesCompleted} out of {len(courses)}.")
-                except Exception as e:
-                    print(e)
-                    return
+                print_progress_bar(coursesCompleted, len(courses), prefix = 'Progress:', suffix = 'Complete', length = 50)
                 coursesCompleted += 1
             except Exception:
                 pass
@@ -130,3 +124,11 @@ def parseCoursesIntoJSON(link: str):
 
 def getSubjectName():
     return driver.find_element(By.CLASS_NAME, 'page-title').text
+
+def print_progress_bar(iteration, total, prefix='', suffix='', decimals=1, length=50, fill='█', print_end="\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filled_length = int(length * iteration // total)
+    bar = fill * filled_length + '-' * (length - filled_length)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end=print_end)
+    if iteration == total: 
+        print()
