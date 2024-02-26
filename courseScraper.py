@@ -61,7 +61,6 @@ def parseCoursesIntoJSON(link: str):
     try:
         wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'page-title')))
         subjectName = driver.find_element(By.CLASS_NAME, 'page-title').text
-        courseInfoForGivenSubject.append({'subject-name', subjectName})
         courses = driver.find_elements(By.CLASS_NAME, 'courseblock')
         print(f"Now parsing through courses in {subjectName}")
         for course in courses:

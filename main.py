@@ -24,7 +24,7 @@ if scrapeOption == 'y':
             output.append(subjectInfo)
     now = datetime.now()
     current_date_time = now.strftime("%m-%d-%Y")
-    with open(f"category_links_{current_date_time}.json", 'w') as file:
+    with open(f"./output/category_links_{current_date_time}.json", 'w') as file:
         json.dump(output, file, indent = 4)
 else:
     print("Have a nice day!")
