@@ -3,15 +3,14 @@ from datetime import datetime
 import json, os
 os.system('cls')
 
-debug = True
+debug = False
 
-if debug:
-    scrapeOption = 'y'
-else:
-    scrapeOption = input("Update course catalog? (y/n): ")
+scrapeOption = input("Update course catalog? (y/n): ")
 if scrapeOption == 'y':
     links = findLinks()
     output = []
+
+    print(f"Found {len(links)} subjects. Now parsing all course information into JSON format (this will take a really long time)...")
 
     if debug:
         for i in range(3):
