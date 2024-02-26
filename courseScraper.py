@@ -10,6 +10,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 
+debug = True
+
 headless = True
 if headless:
     chrome_options = Options()
@@ -62,16 +64,53 @@ def parseCoursesIntoJSON(link: str):
         wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'page-title')))
         subjectName = driver.find_element(By.CLASS_NAME, 'page-title').text
         courses = driver.find_elements(By.CLASS_NAME, 'courseblock')
+        mortarBoardClasses = driver.find_elements(By.CLASS_NAME, 'gradcap')
         print(f"Now parsing through courses in {subjectName}")
         for course in courses:
             try:
+                if course in mortarBoardClasses:
+                    mortarBoard = True
+                else:
+                    mortarBoard = False
                 courseCode = course.find_element(By.CLASS_NAME, 'courseblockcode').text
-                #print(courseCode)
+                courseTitle = course.find_element(By.CLASS_NAME, 'courseblocktitle').text.split(" \u2014 ")[1]
+                credits = course.find_element(By.CLASS_NAME, 'courseblockcredits').text.split(" ")[0]
+                description = course.find_element(By.CLASS_NAME, 'courseblockdesc').text
 
-
+                output = {
+                    'course-code': courseCode, 
+                    'course-title': courseTitle, 
+                    'credits': credits, 
+                    'description': description, 
+                    'mortarboard': mortarBoard
+                    }
+                
+                try:
+                    toggle_button = driver.find_element(By.CLASS_NAME, 'cb-extras-toggle')
+                    toggle_button.click()
+                    extras = driver.find_elements(By.CLASS_NAME, 'courseblockextra')
+                    for extra in extras:
+                        try:
+                            label = extra.find_element(By.CLASS_NAME, 'cbextra-label').text
+                            data = extra.find_element(By.CLASS_NAME, 'cbextra-data').text
+                            if label and data:
+                                if debug:
+                                    print(f"{label} {data}")
+                                output[label] = data
+                        except Exception as e:
+                            print(e)
+                            return
+                    if debug:
+                            courseInfoForGivenSubject.append(output)
+                            return courseInfoForGivenSubject
+                    else:
+                        pass
+                except Exception as e:
+                    print(e)
+                    return
 
                 # add info to list
-                courseInfoForGivenSubject.append({'course-code': courseCode})
+                courseInfoForGivenSubject.append(output)
             except Exception:
                 pass
         return courseInfoForGivenSubject

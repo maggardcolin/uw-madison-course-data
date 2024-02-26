@@ -14,7 +14,7 @@ if scrapeOption == 'y':
     output = []
 
     if debug:
-        for i in range(3):
+        for i in range(1):
             link = links[i]
             subjectInfo = parseCoursesIntoJSON(link)
             output.append(subjectInfo)
