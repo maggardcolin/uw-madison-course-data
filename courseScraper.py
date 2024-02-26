@@ -31,7 +31,7 @@ def findLinks():
 
     print("Now finding links on the UW Madison course catalog page.")
 
-    subjects = []
+    links = []
 
     driver.get(f"https://guide.wisc.edu/courses/")
     wait = WebDriverWait(driver, 10)
@@ -42,39 +42,39 @@ def findLinks():
         subjects = index.find_elements(By.CSS_SELECTOR, 'ul li a')
         for subject in subjects:
             try:
-                link = subject.get_attribute('href') 
-                subjects.append(link)
-                print(link)
+                link = subject.get_attribute('href')
+                links.append(link)
+                #print(link)
             except Exception:
                 pass
-        return subjects
+        return links
     except TimeoutException:
         print("Timeout while waiting for course catalog to load.")
-    finally:
-        driver.quit()
 
-def parseCoursesIntoJSON(link):
+def parseCoursesIntoJSON(link: str):
 
-    courses = []
+    courseInfoForGivenSubject = []
 
-    driver.get(f"https://guide.wisc.edu/courses/")
+    driver.get(link)
     wait = WebDriverWait(driver, 10)
 
     try:
-        wait.until(EC.visibility_of_element_located((By.ID, 'page-title')))
-        pageTitle = driver.find_element((By.ID, 'page-title').text)
-        index = driver.find_element(By.ID, 'atozindex')
-        subjects = index.find_elements(By.CSS_SELECTOR, 'ul li a')
-        print("Now parsing through courses in {subjectName}")
-        for subject in subjects:
+        wait.until(EC.visibility_of_element_located((By.CLASS_NAME, 'page-title')))
+        subjectName = driver.find_element(By.CLASS_NAME, 'page-title').text
+        courseInfoForGivenSubject.append({'subject-name', subjectName})
+        courses = driver.find_elements(By.CLASS_NAME, 'courseblock')
+        print(f"Now parsing through courses in {subjectName}")
+        for course in courses:
             try:
-                link = subject.get_attribute('href') 
-                subjects.append(link)
-                print(link)
+                courseCode = course.find_element(By.CLASS_NAME, 'courseblockcode').text
+                #print(courseCode)
+
+
+
+                # add info to list
+                courseInfoForGivenSubject.append({'course-code': courseCode})
             except Exception:
                 pass
-        return subjects
+        return courseInfoForGivenSubject
     except TimeoutException:
-        print("Timeout while waiting for course catalog to load.")
-    finally:
-        driver.quit()
+        print("Timeout while waiting for courses to load.")
